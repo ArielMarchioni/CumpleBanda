@@ -1,4 +1,3 @@
-// https://docs.google.com/spreadsheets/d/e/2PACX-1vTLfN8R5dKbfYz8vOCRoW3hyB4CRguhL8Z1qhOStJrptJtstAeeFocKtDusMqcNGIzfoeI4_GZ8ANFD/pub?gid=0&single=true&output=csv
 const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLfN8R5dKbfYz8vOCRoW3hyB4CRguhL8Z1qhOStJrptJtstAeeFocKtDusMqcNGIzfoeI4_GZ8ANFD/pub?gid=0&single=true&output=csv';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,9 +15,9 @@ function parseCSV(csvText) {
 
     rows.forEach(row => {
         const [nombre, fechaNacimiento] = row.split(',');
-        const cumpleDate = new Date(fechaNacimiento.trim());
+        const cumpleDate = parseFechaDDMMYYYY(fechaNacimiento.trim());
 
-        if (!isNaN(cumpleDate)) {
+        if (cumpleDate) {
             const cumpleMes = cumpleDate.getMonth();
             const cumpleDia = cumpleDate.getDate();
             const edad = hoy.getFullYear() - cumpleDate.getFullYear();
@@ -61,11 +60,16 @@ function parseCSV(csvText) {
     // Mostrar el cumpleaños más próximo
     if (proximoCumpleano) {
         mostrarCumpleanos([proximoCumpleano], 'cumpleanos-proximo');
-        document.getElementById('titulo-proximos-cumpleanos').textContent =
-            `Próximo Cumpleaños`;
+        document.getElementById('titulo-proximos-cumpleanos').textContent = `Próximo Cumpleaños`;
     } else {
         document.getElementById('proximos-cumpleanos').style.display = 'none';
     }
+}
+
+// Función para convertir una fecha en formato dd/mm/aaaa a un objeto Date
+function parseFechaDDMMYYYY(fechaStr) {
+    const [dia, mes, anio] = fechaStr.split('/');
+    return new Date(`${anio}-${mes}-${dia}`);
 }
 
 function mostrarCumpleanos(lista, elementoId) {

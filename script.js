@@ -1,4 +1,3 @@
-// URL de Google Sheets en formato CSV
 const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTLfN8R5dKbfYz8vOCRoW3hyB4CRguhL8Z1qhOStJrptJtstAeeFocKtDusMqcNGIzfoeI4_GZ8ANFD/pub?gid=0&single=true&output=csv';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -7,12 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(csvText => parseCSV(csvText));
 });
 
-// Función para convertir fecha en formato dd/mm/aaaa a un objeto Date
+// Convierte fecha en formato dd/mm/aaaa a un objeto Date
 function parseFechaDDMMYYYY(fechaStr) {
     const [dia, mes, anio] = fechaStr.split('/').map(Number);
     return new Date(anio, mes - 1, dia); 
 }
 
+// Función principal para procesar el CSV
 function parseCSV(csvText) {
     const rows = csvText.split('\n').slice(1); // Ignorar la primera fila (cabeceras)
     const hoy = new Date();
@@ -35,7 +35,7 @@ function parseCSV(csvText) {
             }
             // Verificar si cumple en el mismo mes pero no hoy
             else if (cumpleMes === hoy.getMonth()) {
-                cumpleanosEsteMes.push({ nombre, edad, fecha: `${cumpleDia}/${cumpleMes + 1}` });
+                cumpleanosEsteMes.push({ nombre, edad, fecha: `${cumpleDia} de ${obtenerNombreMes(cumpleMes)}` });
             }
 
             // Calcular el cumpleaños más próximo
@@ -45,7 +45,7 @@ function parseCSV(csvText) {
             }
             const diferenciaDias = Math.ceil((cumpleanoFuturo - hoy) / (1000 * 60 * 60 * 24));
             if (!proximoCumpleano || diferenciaDias < proximoCumpleano.dias) {
-                proximoCumpleano = { nombre, edad, fecha: `${cumpleDia}/${cumpleMes + 1}`, dias: diferenciaDias };
+                proximoCumpleano = { nombre, edad, fecha: `${cumpleDia} de ${obtenerNombreMes(cumpleMes)}`, dias: diferenciaDias };
             }
         }
     });
@@ -73,6 +73,7 @@ function parseCSV(csvText) {
     }
 }
 
+
 function mostrarCumpleanos(lista, elementoId) {
     const container = document.getElementById(elementoId);
     container.innerHTML = '';
@@ -90,6 +91,7 @@ function mostrarCumpleanos(lista, elementoId) {
         container.appendChild(card);
     });
 }
+
 
 function obtenerNombreMes(indiceMes) {
     const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
